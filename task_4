@@ -1,0 +1,38 @@
+"""
+Задание 4.
+Реализуйте скрипт "Кэширование веб-страниц"
+
+Функция должна принимать url-адрес и проверять
+есть ли в кэше соответствующая страница, если нет, то вносит ее в кэш
+
+Подсказка: задачу решите обязательно с применением 'соленого' хеширования
+Можете условжнить задачу, реализовав ее через ООП
+"""
+
+from uuid import uuid4
+import hashlib
+
+
+def checking(new_url, salt, bd_url):
+    checking_url = supplement_hash_url(new_url, salt)
+    for i, j in bd_url.items():
+        if j == checking_url:
+            return print('Url-адрес есть в базе.')
+    bd_url[new_url] = checking_url
+    print('Url-адрес добавлен.')
+    return bd_url
+
+
+def supplement_hash_url(new_url, salt):
+    hash_url = hashlib.md5(salt.encode() + new_url.encode()).hexdigest()
+    return hash_url
+
+
+say = 'y'
+bd_url = {}
+SALT = uuid4().hex
+while say == 'y':
+    url = input('Введите url-адрес для проверки (пример: https://mail.ru): ')
+    checking(url, SALT, bd_url)
+    print(bd_url)
+    say = input('Хотите продолжить? y/n: ')
