@@ -1,0 +1,63 @@
+"""
+Задание 3.
+
+Приведен код, формирующий из введенного числа
+обратное по порядку входящих в него
+цифр и вывести на экран.
+
+Сделайте профилировку каждого алгоритма через cProfile и через timeit
+
+Сделайте вывод, какая из трех реализаций эффективнее и почему
+"""
+from timeit import timeit
+import cProfile
+
+
+def revers(enter_num, revers_num=0):
+    if enter_num == 0:
+        return
+    else:
+        num = enter_num % 10
+        revers_num = (revers_num + num / 10) * 10
+        enter_num //= 10
+        revers(enter_num, revers_num)
+
+
+def revers_2(enter_num, revers_num=0):
+    while enter_num != 0:
+        num = enter_num % 10
+        revers_num = (revers_num + num / 10) * 10
+        enter_num //= 10
+    return revers_num
+
+
+def revers_3(enter_num):
+    enter_num = str(enter_num)
+    revers_num = enter_num[::-1]
+    return revers_num
+
+
+# 221387665135765541328
+user_number = int(input('Введите целое число: '))
+revers(user_number)
+revers_2(user_number)
+revers_3(user_number)
+
+print(f"Первая реализация через timeit "
+      f"{timeit('revers(user_number)', setup='from __main__ import revers, user_number', number=1000)} сек")
+cProfile.run('revers(221387665135765541328)')
+
+
+print(f"Вторая реализация через timeit "
+      f"{timeit('revers_2(user_number)', setup='from __main__ import revers_2, user_number', number=1000)} сек")
+cProfile.run('revers_2(221387665135765541328)')
+
+
+print(f"Третья реализация через timeit "
+      f"{timeit('revers_3(user_number)', setup='from __main__ import revers_3, user_number', number=1000)} сек")
+cProfile.run('revers_3(221387665135765541328)')
+
+
+"""
+Вывод: Самая эффективная Третья реализация. Из-за отсутствия огромного кол-ва математических операций,
+особенно заметно на длинном числе. Плюс встроенные функции отрабатывают быстрее. В нашем случае это срез."""
