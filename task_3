@@ -1,0 +1,68 @@
+"""
+Задача 3.
+В соответствии с документацией Python,
+deque – это обобщение стеков и очередей.
+Вот основное правило: если вам нужно что-то быстро дописать или вытащить, используйте deque.
+Если вам нужен быстрый случайный доступ, используйте list.
+
+Задача: создайте простой список (list) и очередь (deque).
+Выполните различные операции с каждым из объектов.
+Сделайте замеры и оцените, насколько информация в документации
+соответствует дейстивтельности.
+"""
+from collections import deque
+from timeit import timeit
+from random import randint
+
+my_list = []
+for i in range(100000):
+    my_list.append(randint(1000000000000000000000000000000000, 1000000000000000000000000000000000000000000000000000000))
+
+
+def append_pop(lst):
+    lst.append(4351354635165468743548345165749864516574986451896574653416857498654168543163524165416534216354312313)
+    lst.pop()
+
+
+def append(lst):
+    lst.append(4351354635165468743548345165749864516574986451896574653416857498654168543163524165416534216354312313)
+
+
+def pop(lst):
+    lst.pop()
+
+
+def append_left(lst):
+    lst.appendleft(4351354635165468743548345165749864516574986451896574653416857498654168543163524165416534216354312313)
+
+
+def insert(lst):
+    lst.insert(0, 4351354635165468743548345165749864516574986451896574653416857498654168543163524165416534216354312313)
+
+
+deq_obj = deque(my_list)
+
+print(f"Замер с добавлением значения в конец списка с последующим удалением, используя Deque: "
+      f"{timeit('append_pop(deq_obj)', setup='from __main__ import append_pop, deq_obj', number=1000000)} сек")
+print(f"Замер с добавлением значения в конец списка с последующим удалением, НЕ используя Deque: "
+      f"{timeit('append_pop(my_list)', setup='from __main__ import append_pop, my_list', number=1000000)} сек")
+print(f"Замер с добавлением значения в конец списка, используя Deque: "
+      f"{timeit('append(deq_obj)', setup='from __main__ import append, deq_obj', number=1000000)} сек")
+print(f"Замер с добавлением значения в конец списка, НЕ используя Deque: "
+      f"{timeit('append(my_list)', setup='from __main__ import append, my_list', number=1000000)} сек")
+print(f"Замер с удалением значения с конца списка, используя Deque: "
+      f"{timeit('pop(deq_obj)', setup='from __main__ import pop, deq_obj', number=1000000)} сек")
+print(f"Замер с удалением значения с конца списка, НЕ используя Deque: "
+      f"{timeit('pop(my_list)', setup='from __main__ import pop, my_list', number=1000000)} сек")
+print(f"Замер с добавлением значения в начало списка, используя Deque: "
+      f"{timeit('append_left(deq_obj)', setup='from __main__ import append_left, deq_obj', number=10000)} сек")
+print(f"Замер с добавлением значения в начало списка через 'insert', используя Deque: "
+      f"{timeit('insert(deq_obj)', setup='from __main__ import insert, deq_obj', number=10000)} сек")
+print(f"Замер с добавлением значения в начало списка через 'insert', НЕ используя Deque: "
+      f"{timeit('insert(my_list)', setup='from __main__ import insert, my_list', number=10000)} сек")
+
+
+"""
+Вывод: Deque отрабатывает немного быстрее в 60% случаях, чем стандартые функуции списков.
+Чего не сказать про 'insert', она отрабатывает на порядки медленее, чем 'appendleft' или 'insert' у deque.
+"""
