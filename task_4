@@ -1,0 +1,54 @@
+"""
+Задача 4.
+Поработайте с обычным словарем и OrderedDict.
+Выполните различные операции с каждым из объектов и сделайте замеры.
+Опишите полученные результаты, сделайте выводы.
+"""
+from collections import OrderedDict
+from timeit import timeit
+
+
+def sorted_dict(dct):
+    sort = sorted(dct.items())
+    return sort
+
+
+def add_auto(dct):
+    dct['Volvo'] = 9
+    return dct
+
+
+def return_dict(dct):
+    return dct.items()
+
+
+def pop(dct):
+    dct.pop('Audi')
+    dct['Audi'] = 9
+    return dct
+
+
+my_dict = {'Mazda': 1, 'Ford': 2, 'Bugatti': 3, 'Bentley': 4, 'Ferrari': 5, 'Audi': 6, 'BMW': 7, 'Hummer': 8}
+new_dict = OrderedDict(my_dict)
+
+print(f"Сортировка обычного словаря: "
+      f"{timeit('sorted_dict(my_dict)', setup='from __main__ import sorted_dict, my_dict', number=10000000)} сек")
+print(f"Сортировка словаря с использованием OrderedDict: "
+      f"{timeit('sorted_dict(new_dict)', setup='from __main__ import sorted_dict, new_dict', number=10000000)} сек")
+print(f"Добавление значений в обычный словарь: "
+      f"{timeit('add_auto(my_dict)', setup='from __main__ import add_auto, my_dict', number=10000000)} сек")
+print(f"Добавление значений с использованием OrderedDict: "
+      f"{timeit('add_auto(new_dict)', setup='from __main__ import add_auto, new_dict', number=10000000)} сек")
+print(f"Возврат ключ-значение в обычном словаре: "
+      f"{timeit('return_dict(my_dict)', setup='from __main__ import return_dict, my_dict', number=10000000)} сек")
+print(f"Возврат ключ значение с использованием OrderedDict: "
+      f"{timeit('return_dict(new_dict)', setup='from __main__ import return_dict, new_dict', number=10000000)} сек")
+print(f"Удаление и добавление  значения в обычном словаре: "
+      f"{timeit('pop(my_dict)', setup='from __main__ import pop, my_dict', number=10000000)} сек")
+print(f"Удаление и добавление  значения с использованием OrderedDict: "
+      f"{timeit('pop(new_dict)', setup='from __main__ import pop, new_dict', number=10000000)} сек")
+
+"""
+Вывод: В целом необходимость в OrderedDict с Python 3.6+ отпала. Замеры показывают, что работа с обычным словарем
+незначительно, но быстрее. А вот удаление и добавление значений существенно быстрее при работе с обычным словарем.
+"""
