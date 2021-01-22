@@ -1,0 +1,68 @@
+"""
+1. Отсортируйте по убыванию методом "пузырька" одномерный целочисленный массив,
+заданный случайными числами на промежутке [-100; 100). Выведите на экран
+исходный и отсортированный массивы. Сортировка должна быть реализована в
+виде функции. Обязательно доработайте алгоритм (сделайте его умнее).
+
+Идея доработки: если за проход по списку не совершается ни одной сортировки,
+то завершение
+Обязательно сделайте замеры времени обеих реализаций
+и обосновать дала ли оптимизация эффективность
+
+Подсказка: обратите внимание, сортируем не по возрастанию, как в примере,
+а по убыванию
+"""
+import timeit
+import random
+
+
+def bubble_sort(lst_obj):
+    n = 1
+    while n < len(lst_obj):
+        for i in range(len(lst_obj)-n):
+            if lst_obj[i] > lst_obj[i+1]:
+                lst_obj[i], lst_obj[i+1] = lst_obj[i+1], lst_obj[i]
+        n += 1
+    return lst_obj
+
+
+def min_up_sort(lst_obj):
+    n = 1
+    m = 0
+    while n < len(lst_obj):
+        for i in range(len(lst_obj)-n):
+            if lst_obj[i] < lst_obj[i+1]:
+                lst_obj[i], lst_obj[i+1] = lst_obj[i+1], lst_obj[i]
+                m += 1
+        if m == 0:
+            break
+        n += 1
+    return lst_obj
+
+
+# замеры 10
+or_list_10 = [random.randint(-100, 100) for _ in range(10)]
+print(timeit.timeit("bubble_sort(or_list_10[:])", setup="from __main__ import bubble_sort, or_list_10", number=100))
+print(timeit.timeit("min_up_sort(or_list_10[:])", setup="from __main__ import min_up_sort, or_list_10", number=100))
+
+# замеры 100
+or_list_100 = [random.randint(-100, 100) for _ in range(100)]
+print(timeit.timeit("bubble_sort(or_list_100[:])", setup="from __main__ import bubble_sort, or_list_100", number=100))
+print(timeit.timeit("min_up_sort(or_list_100[:])", setup="from __main__ import min_up_sort, or_list_100", number=100))
+
+# замеры 1000
+or_list_1000 = [random.randint(-100, 100) for _ in range(1000)]
+print(timeit.timeit("bubble_sort(or_list_1000[:])", setup="from __main__ import bubble_sort, or_list_1000", number=100))
+print(timeit.timeit("min_up_sort(or_list_1000[:])", setup="from __main__ import min_up_sort, or_list_1000", number=100))
+
+""" всплывает наибольшее значение  |  всплывает наименьшее значение
+10      0.0018470000000000014           0.0015779000000000001
+100     0.1437236                       0.14218179999999997
+1000    14.362370400000001              15.987928599999998
+
+Вывод: Разница в скорости отработки кода методом "пузырька" не зависит от всплытия меньшего или большего значения.
+Заметил, что всегда скорость отработки кода чуть выше при больших массивах чисел и всплывании наибольшего значения 
+(на 1000 значениях, это около секунды, можно и пренебречь).
+Оптимизация позволит сократить скорость выполнения кода, но вероятность получения уже отсортированного массива 
+чисел крошечна.
+"""
