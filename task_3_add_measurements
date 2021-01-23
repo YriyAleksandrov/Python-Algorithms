@@ -1,0 +1,49 @@
+"""
+3. Массив размером 2m + 1, где m – натуральное число, заполнен случайным образом.
+Найдите в массиве медиану. Медианой называется элемент ряда, делящий его на
+две равные части: в одной находятся элементы, которые не меньше медианы,
+в другой – не больше медианы.
+
+Задачу можно решить без сортировки исходного
+массива.
+
+Но если это слишком сложно, то используйте метод сортировки,
+который не рассматривался на уроках: Шелла, Гномья, ...
+
+arr[m]
+from statistics import median
+"""
+from statistics import median
+import timeit
+import random
+
+
+def shell(lst):
+    inc = len(lst) // 2
+    while inc:
+        for i, el in enumerate(lst):
+            while i >= inc and lst[i - inc] > el:
+                lst[i] = lst[i - inc]
+                i -= inc
+            lst[i] = el
+        inc = 1 if inc == 2 else int(inc * 5.0 / 11)
+    return lst
+
+
+m = int(input('Введите натуральное число: '))
+my_list = [random.randint(0, m) for i in range(2*m+1)]
+
+print(shell(my_list))
+print(f'Медиана найденная методом Шелла: {my_list[m]}')
+print(f'Медиана найденная проверочной функцией: {median(my_list[:])}')
+
+print(timeit.timeit("shell(my_list)", setup="from __main__ import shell, my_list", number=100))
+print(timeit.timeit("median(my_list)", setup="from __main__ import median, my_list", number=100))
+
+"""     Скорость методом Шелла      Скорость проверочной функции median
+10          0.0013758999999997634       7.16000000000605e-05
+100         0.021567699999999856        0.00023930000000005336
+1000        0.35474799999999984         0.001773400000000258
+
+Вывод: Скорость отработки функцией median выше, так как у метода Шелла сложность квадратичная.
+"""
