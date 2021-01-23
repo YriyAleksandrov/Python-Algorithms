@@ -1,0 +1,91 @@
+"""
+Задание 1.
+Реализуйте кодирование строки "по Хаффману".
+У вас два пути:
+1) тема идет тяжело? тогда вы можете, опираясь на пример с урока, сделать свою версию алгоритма
+Разрешается и приветствуется изменение имен переменных, выбор других коллекций, различные изменения
+и оптимизации.
+КОПИПАСТ ПРИМЕРА ПРИНИМАТЬСЯ НЕ БУДЕТ!
+2) тема понятна? постарайтесь сделать свою реализацию.
+Вы можете реализовать задачу, например, через ООП или предложить иной подход к решению.
+
+ВНИМАНИЕ: примеры заданий будут размещены в последний день сдачи.
+Но постарайтесь обойтись без них.
+"""
+from collections import Counter
+
+
+def form_tree(string):
+    # создаем словарь со всеми символами и счетчиком повторений в строке
+    string_count = Counter(string)
+
+    # либо условие if либо входим в цикл
+    if len(string_count) <= 1:
+        host = Node(None)  # создаем узел
+
+        if len(string_count) == 1:
+            host.left = Node([key for key in string_count][0])
+            host.right = Node(None)
+
+        string_count = {host: 1}
+
+    while len(string_count) != 1:  # цикл формирования дерева, идем с конца словаря
+        host = Node(None)  # создаем узел
+        token = string_count.most_common()[:-3:-1]  # взяли первые два значения (с конца)
+
+        """работаем с первым значением,
+        если символ, то добавляем в левую часть"""
+        if isinstance(token[0][0], str):
+            host.left = Node(token[0][0])
+        else:  # узел, добавляем его целиком в левую часть
+            host.left = token[0][0]
+        """работаем со вторым значением,
+        если символ, то добавляем в правую часть"""
+        if isinstance(token[1][0], str):
+            host.right = Node(token[1][0])
+        else:  # узел, добавляем его целиком в правую часть
+            host.right = token[1][0]
+
+        # убраем отработанные значения
+        del string_count[token[0][0]]
+        del string_count[token[1][0]]
+
+        string_count[host] = token[0][1] + token[1][1]  # складываем количество повторений сиволов, добавляем в словарь
+    return [key for key in string_count][0]  # возвращем бинарное дерево
+
+
+def encoding(root, dct, code=''):  # проходим рекурсией по дереву и встречая символы кодируем их собранными 0 и 1
+    if root is None:  # если значений больше нет, завершаемся
+        return
+    # если встречаем сивол, то записываем его ключем, а код значением
+    if isinstance(root.value, str):
+        dct[root.value] = code
+        return dct
+    # собираем код из 0 и 1
+    encoding(root.left, dct, code + '0')
+    encoding(root.right, dct, code + '1')
+    return dct
+
+
+def coding(string, cod):  # проходим по нашей строке и вместо символа вставляем его закодированное значение
+    res = ''
+    for symbol in string:
+        res += cod[symbol]
+        res += ' '
+    return res
+
+
+class Node:
+    def __init__(self, value, left=None, right=None):
+        self.right = right
+        self.left = left
+        self.value = value
+
+
+my_string = input('Введите строку для кодирование "по Хаффману": ')
+cod_dict = {}
+tree = form_tree(my_string)
+codes = encoding(tree, cod_dict)  # кодировка
+print(f'Кодировка: {codes}')
+coding_str = coding(my_string, codes)  # получение финального кода
+print('Финальный код: ', coding_str)
