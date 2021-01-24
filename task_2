@@ -1,0 +1,54 @@
+"""
+Задание 2.
+
+Доработайте пример структуры "дерево",
+рассмотренный на уроке.
+
+Предложите варианты доработки и оптимизации
+(например, валидация значений узлов в соответствии с требованиями для бинарного дерева)
+
+Поработайте с доработанной структурой, позапускайте на реальных данных.
+"""
+
+
+class BinaryTree:
+    def __init__(self, root_obj):
+        self.root_obj = root_obj
+        self.left_child = None
+        self.right_child = None
+
+    def insert(self, root_obj):  # Сравниваем новое значение с родительским узлом
+        if self.root_obj:
+            if root_obj < self.root_obj:
+                if self.left_child is None:
+                    self.left_child = BinaryTree(root_obj)
+                else:
+                    self.left_child.insert(root_obj)
+            elif root_obj > self.root_obj:
+                if self.right_child is None:
+                    self.right_child = BinaryTree(root_obj)
+                else:
+                    self.right_child.insert(root_obj)
+        else:
+            self.root_obj = root_obj
+
+    def print_tree(self):  # Выводим дерево
+        if self.left_child:
+            self.left_child.print_tree()
+        print(self.root_obj)
+        if self.right_child:
+            self.right_child.print_tree()
+
+
+r = BinaryTree(10)
+r.insert(4)
+r.insert(12)
+r.insert(14)
+r.insert(3)
+r.insert(24)
+r.insert(13)
+r.insert(8)
+r.insert(1)
+r.insert(9)
+r.insert(18)
+r.print_tree()
